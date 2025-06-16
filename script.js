@@ -1,5 +1,5 @@
 // script.js
-const allowedCountries = ['australia', 'estonia', 'england', 'usa'];
+const allowedCountries = ['australia', 'estonia', 'united-kingdom', 'usa'];
 
 window.onload = async () => {
   await loadCountries();
@@ -8,18 +8,20 @@ window.onload = async () => {
 async function loadCountries() {
   try {
     const res = await fetch('https://5sim.net/v1/guest/prices?product=google');
+    if (!res.ok) throw new Error('Network response was not ok');
     const data = await res.json();
     const select = document.getElementById('country');
     allowedCountries.forEach(c => {
       if (data[c] && data[c].google) {
         const option = document.createElement('option');
         option.value = c;
-        option.innerText = c.charAt(0).toUpperCase() + c.slice(1);
+        option.innerText = c.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         select.appendChild(option);
       }
     });
   } catch (err) {
-    alert('Ошибка загрузки стран.');
+    console.error('Ошибка загрузки стран:', err);
+    alert('Ошибка загрузки стран. Проверьте соединение или доступность API.');
   }
 }
 
