@@ -1,28 +1,24 @@
 // script.js
 const allowedCountries = ['australia', 'estonia', 'united-kingdom', 'usa'];
-
-window.onload = async () => {
-  await loadCountries();
+const staticPrices = {
+  'australia': 10,
+  'estonia': 8,
+  'united-kingdom': 12,
+  'usa': 9
 };
 
-async function loadCountries() {
-  try {
-    const res = await fetch('https://5sim.net/v1/guest/prices?product=google');
-    if (!res.ok) throw new Error('Network response was not ok');
-    const data = await res.json();
-    const select = document.getElementById('country');
-    allowedCountries.forEach(c => {
-      if (data[c] && data[c].google) {
-        const option = document.createElement('option');
-        option.value = c;
-        option.innerText = c.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        select.appendChild(option);
-      }
-    });
-  } catch (err) {
-    console.error('Ошибка загрузки стран:', err);
-    alert('Ошибка загрузки стран. Проверьте соединение или доступность API.');
-  }
+window.onload = async () => {
+  loadCountries();
+};
+
+function loadCountries() {
+  const select = document.getElementById('country');
+  allowedCountries.forEach(c => {
+    const option = document.createElement('option');
+    option.value = c;
+    option.innerText = c.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    select.appendChild(option);
+  });
 }
 
 async function loadPrices() {
@@ -34,9 +30,7 @@ async function loadPrices() {
   if (!apiKey) return;
 
   try {
-    const priceRes = await fetch('https://5sim.net/v1/guest/prices?product=google');
-    const priceData = await priceRes.json();
-    const price = priceData[country]?.google?.cost || 'недоступно';
+    const price = staticPrices[country] || 'недоступно';
     priceDiv.innerText = price + ' ₽';
   } catch {
     priceDiv.innerText = 'Ошибка получения цены';
