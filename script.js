@@ -52,6 +52,7 @@ async function loadPrices() {
 async function buyNumbers() {
   const count = parseInt(document.getElementById('count').value);
   const country = document.getElementById('country').value;
+  const product = document.getElementById('product').value;
   const apiKey = document.getElementById('apiKey').value.trim();
   const container = document.getElementById('numbers');
   container.innerHTML = '';
@@ -63,8 +64,8 @@ async function buyNumbers() {
 
   for (let i = 0; i < count; i++) {
     try {
-      const res = await fetch(`https://5sim.net/v1/user/buy/activation/${country}/google`, {
-        method: 'GET',
+      const res = await fetch(`https://5sim.net/v1/user/buy/activation/${country}/any/${product}`, {
+        method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
           'Accept': 'application/json',
